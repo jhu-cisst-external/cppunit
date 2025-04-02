@@ -4,10 +4,7 @@
 # (http://sourceforge.net/projects/cppunit/).
 
 # Mininum required CMake version
-cmake_minimum_required(VERSION 2.6)
-
-# CMake policy
-cmake_policy(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.16)
 
 project(cppunit)
 
@@ -15,7 +12,7 @@ include_directories(include)
 
 # CppUnit version number
 set(CPPUNIT_MAJOR_VERSION 1)
-set(CPPUNIT_MINOR_VERSION 12)
+set(CPPUNIT_MINOR_VERSION 15)
 set(CPPUNIT_MICRO_VERSION 1)
 set(CPPUNIT_VERSION ${CPPUNIT_MAJOR_VERSION}.${CPPUNIT_MINOR_VERSION}.${CPPUNIT_MICRO_VERSION})
 ##
@@ -129,7 +126,7 @@ configure_file(config/config.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/include/cppunit
 set(cppunit_SRCS
 	src/cppunit/AdditionalMessage.cpp
 	src/cppunit/Asserter.cpp
-	src/cppunit/BeOsDynamicLibraryManager.cpp
+#	src/cppunit/BeOsDynamicLibraryManager.cpp
 	src/cppunit/BriefTestProgressListener.cpp
 	src/cppunit/CompilerOutputter.cpp
 	src/cppunit/DefaultProtector.h
