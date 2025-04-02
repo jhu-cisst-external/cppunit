@@ -1,6 +1,6 @@
-EXTRA_DIST = simple.dsp simple_plugin.dsp SimplePlugIn.cpp
+EXTRA_DIST = simple.vcproj simple_plugin.opt simple_plugin.vcproj SimplePlugIn.cpp
 
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include
 
 noinst_PROGRAMS = simple
 

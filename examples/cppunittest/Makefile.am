@@ -1,9 +1,9 @@
-EXTRA_DIST = CppUnitTestMain.dsw CppUnitTestMain.dsp CppUnitTestPlugIn.dsp CppUnitTestPlugIn.cpp
+EXTRA_DIST = CppUnitTestMain.vcproj CppUnitTestPlugIn.vcproj CppUnitTestPlugIn.cpp
 
 TESTS = cppunittestmain
 check_PROGRAMS = $(TESTS)
 
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include
 
 cppunittestmain_SOURCES = \
 	assertion_traitsTest.cpp \

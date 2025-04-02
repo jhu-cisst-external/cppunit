@@ -8,8 +8,8 @@ CPPUNIT_NS_BEGIN
   
 XmlElement::XmlElement( std::string elementName,
                         std::string content ) 
-  : m_name( elementName )
-  , m_content( content )
+  : m_name(std::move(elementName))
+  , m_content(std::move(content))
   , m_attributes()
   , m_elements()
 {
@@ -18,7 +18,7 @@ XmlElement::XmlElement( std::string elementName,
     
 XmlElement::XmlElement( std::string elementName,
                         int numericContent )
-  : m_name( elementName )
+  : m_name(std::move(elementName))
   , m_content()
   , m_attributes()
   , m_elements()
@@ -74,15 +74,15 @@ XmlElement::setContent( int numericContent )
 
 
 void 
-XmlElement::addAttribute( std::string attributeName,
-                          std::string value  )
+XmlElement::addAttribute( const std::string& attributeName,
+                          const std::string& value  )
 {
   m_attributes.push_back( Attribute( attributeName, value ) );
 }
 
 
 void 
-XmlElement::addAttribute( std::string attributeName,
+XmlElement::addAttribute( const std::string& attributeName,
                           int numericValue )
 {
   addAttribute( attributeName, StringTools::toString( numericValue ) );
@@ -124,7 +124,6 @@ XmlElement::elementFor( const std::string &name ) const
   }
 
   throw std::invalid_argument( "XmlElement::elementFor(), not matching child element found" );
-  return NULL;  // make some compilers happy.
 }
 
 
@@ -195,7 +194,7 @@ XmlElement::attributesAsString() const
 
 
 std::string 
-XmlElement::escape( std::string value ) const
+XmlElement::escape( const std::string& value ) const
 {
   std::string escaped;
   for ( unsigned int index =0; index < value.length(); ++index )

@@ -355,8 +355,7 @@ EXCLUDE_SYMLINKS       = NO
 # certain files from those directories.
 
 EXCLUDE_PATTERNS       = config-*.h \
-                         */CVS/* \
-                         */include/msvc6/DSPlugin/*
+                         */CVS/*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or 
 # directories that contain example code fragments that are included (see 
@@ -829,7 +828,7 @@ HAVE_DOT               = NO
 # If the CLASS_GRAPH and HAVE_DOT tags are set to YES then doxygen 
 # will generate a graph for each documented class showing the direct and 
 # indirect inheritance relations. Setting this tag to YES will force the 
-# the CLASS_DIAGRAMS tag to NO.
+# CLASS_DIAGRAMS tag to NO.
 
 CLASS_GRAPH            = YES
 

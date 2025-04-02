@@ -5,7 +5,7 @@
 #include "MockTestCase.h"
 #include "SubclassedTestCase.h"
 #include <cppunit/TestResult.h>
-#include <cppunit/portability/SmartPtr.h>
+#include <memory>
 
 /* Note:
  - no unit test for CPPUNIT_TEST_SUITE_REGISTRATION...
@@ -77,6 +77,19 @@ public:
   }
 };
 
+class ParameterizedTestFixture : public CPPUNIT_NS::TestFixture
+{
+    CPPUNIT_TEST_SUITE(ParameterizedTestFixture);
+    CPPUNIT_TEST_PARAMETERIZED(testMethod, {1, 2, 3, 4});
+    CPPUNIT_TEST_SUITE_END();
+
+public:
+
+    void testMethod(int /*val*/)
+    {
+    }
+};
+
 
 #undef TEST_ADD_N_MOCK
 #define TEST_ADD_N_MOCK( totalCount )                                              \
@@ -132,7 +145,7 @@ HelperMacrosTest::tearDown()
 void 
 HelperMacrosTest::testNoSubclassing()
 {
-  CppUnitSmartPtr<CPPUNIT_NS::TestSuite> suite( BaseTestCase::suite() );
+  std::unique_ptr<CPPUNIT_NS::TestSuite> suite( BaseTestCase::suite() );
   CPPUNIT_ASSERT_EQUAL( 1, suite->countTestCases() );
   m_testListener->setExpectedStartTestCall( 1 );
   m_testListener->setExpectNoFailure();
@@ -145,7 +158,7 @@ HelperMacrosTest::testNoSubclassing()
 void 
 HelperMacrosTest::testSubclassing()
 {
-  CppUnitSmartPtr<CPPUNIT_NS::TestSuite> suite( SubclassedTestCase::suite() );
+  std::unique_ptr<CPPUNIT_NS::TestSuite> suite( SubclassedTestCase::suite() );
   CPPUNIT_ASSERT_EQUAL( 2, suite->countTestCases() );
   m_testListener->setExpectedStartTestCall( 2 );
   m_testListener->setExpectedAddFailureCall( 1 );
@@ -158,7 +171,7 @@ HelperMacrosTest::testSubclassing()
 void 
 HelperMacrosTest::testFail()
 {
-  CppUnitSmartPtr<CPPUNIT_NS::TestSuite> suite( FailTestFixture::suite() );
+  std::unique_ptr<CPPUNIT_NS::TestSuite> suite( FailTestFixture::suite() );
   m_testListener->setExpectedStartTestCall( 1 );
   m_testListener->setExpectNoFailure();
 
@@ -170,7 +183,7 @@ HelperMacrosTest::testFail()
 void 
 HelperMacrosTest::testFailToFail()
 {
-  CppUnitSmartPtr<CPPUNIT_NS::TestSuite> suite( FailToFailTestFixture::suite() );
+  std::unique_ptr<CPPUNIT_NS::TestSuite> suite( FailToFailTestFixture::suite() );
   m_testListener->setExpectedStartTestCall( 1 );
   m_testListener->setExpectedAddFailureCall( 1 );
 
@@ -182,7 +195,7 @@ HelperMacrosTest::testFailToFail()
 void 
 HelperMacrosTest::testException()
 {
-  CppUnitSmartPtr<CPPUNIT_NS::TestSuite> suite( ExceptionTestFixture::suite() );
+  std::unique_ptr<CPPUNIT_NS::TestSuite> suite( ExceptionTestFixture::suite() );
   m_testListener->setExpectedStartTestCall( 1 );
   m_testListener->setExpectNoFailure();
   
@@ -194,7 +207,7 @@ HelperMacrosTest::testException()
 void 
 HelperMacrosTest::testExceptionNotCaught()
 {
-  CppUnitSmartPtr<CPPUNIT_NS::TestSuite> suite( ExceptionNotCaughtTestFixture::suite() );
+  std::unique_ptr<CPPUNIT_NS::TestSuite> suite( ExceptionNotCaughtTestFixture::suite() );
   m_testListener->setExpectedStartTestCall( 1 );
   m_testListener->setExpectedAddFailureCall( 1 );
 
@@ -206,7 +219,7 @@ HelperMacrosTest::testExceptionNotCaught()
 void 
 HelperMacrosTest::testCustomTests()
 {
-  CppUnitSmartPtr<CPPUNIT_NS::TestSuite> suite( CustomsTestTestFixture::suite() );
+  std::unique_ptr<CPPUNIT_NS::TestSuite> suite( CustomsTestTestFixture::suite() );
   m_testListener->setExpectedStartTestCall( 2 );
   m_testListener->setExpectedAddFailureCall( 1 );
 
@@ -218,10 +231,20 @@ HelperMacrosTest::testCustomTests()
 void 
 HelperMacrosTest::testAddTest()
 {
-  CppUnitSmartPtr<CPPUNIT_NS::TestSuite> suite( AddTestTestFixture::suite() );
+  std::unique_ptr<CPPUNIT_NS::TestSuite> suite( AddTestTestFixture::suite() );
   m_testListener->setExpectedStartTestCall( 7 );
   m_testListener->setExpectedAddFailureCall( 0 );
 
   suite->run( m_result );
+  m_testListener->verify();
+}
+
+void
+HelperMacrosTest::testParameterizedTests()
+{
+  std::unique_ptr<CPPUNIT_NS::TestSuite> suite( ParameterizedTestFixture::suite() );
+  m_testListener->setExpectedStartTestCall(4);
+  m_testListener->setExpectedAddFailureCall( 0 );
+  suite->run(m_result);
   m_testListener->verify();
 }

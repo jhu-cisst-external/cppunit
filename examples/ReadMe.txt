@@ -1,7 +1,7 @@
-simple/simple.dsp: A simple CppUnit's example. Basic TextTestRunner and a single 'standard' 
+simple/simple.vcproj: A simple CppUnit's example. Basic TextTestRunner and a single 'standard'
 	TestFixture. A good starting point
 
-simple/simple_plugin.dsp: Like 'simple', but creates a test plug-in. The test plug-in can
+simple/simple_plugin.vcproj: Like 'simple', but creates a test plug-in. The test plug-in can
 	be run with DllPlugInRunner.
 
 hierarchy/: A simple example that demonstrate the use of helper macros with template
@@ -16,7 +16,3 @@ and includes the timing in the XML output.
 
 DumperPlugIn/: a 'TestListener' plug-in that dumps the test hierarchy as a tree or in
 a flattened format (using TestPath).
-
-msvc6/: VC++ specific examples.
-	HostApp/: Like 'simple' but use the MFC TestRunner.
-qt/: QT specific examples.

@@ -5,7 +5,7 @@
 #include <cppunit/TestResult.h>
 #include <stdexcept>
 
-#if CPPUNIT_USE_TYPEINFO_NAME
+#if defined(CPPUNIT_USE_TYPEINFO_NAME)
 #  include <typeinfo>
 #endif
 
@@ -27,7 +27,7 @@ public:
   {
   }
 
-  bool operator()() const
+  bool operator()() const override
   {
     (m_target->*m_method)();
     return true;

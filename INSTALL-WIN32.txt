@@ -2,17 +2,12 @@ Frequently Asked Questions: See doc/FAQ
 
 
 At the current time, the only supported WIN32 platform is 
-Microsoft Visual C++. You must have VC++ 6.0 at least.
+Microsoft Visual C++. You must have VC++ 2010 at least.
 
 Quick Steps to compile & run a sample using the GUI TestRunner:
-- Open examples/examples.dsw in VC++ (contains all the samples).
-  VC7 will ask you if you want to convert, anwser 'yes to all'.
+- Open examples/examplesXXXX.sln in VC++ (contains all the samples).
 - Make HostApp the Active project
 - Compile
-- For Visual Studio 6 only:
-   - in VC++, Tools/Customize.../Add-ins and macro files/Browse...
-   - select the file lib/TestRunnerDSPlugIn.dll and press ok to register
-     the add-ins (double-click on failure = open file in VC++).
 - Run the project
 
 
@@ -31,11 +26,6 @@ Use this to test DLL in your post-build step, or debug them.
 
 * TestRunner (testrunner.dll) : a MFC extension DLL to run and browser unit 
 tests from a GUI.
-
-* DSPlugIn (lib/TestRunnerDSPlugIn.dll) : a VC++ 6.0 add-in used by 
-testrunner.dll. If you double-click on a failure in the MFC TestRunner,
-a running instance of VC++ will open the file and highlight the line.
-This add-ins is not required for Visual Studio 7.
 
 * TestPlugInRunner : (Warning: experimental) a VC++ 
 application to run test plug-in. A test plug-in is a DLL that publish a 
@@ -86,7 +76,7 @@ name is cppunitd.lib. The debug configuration cppunit dll name is cppunitd_dll.l
 Building:
 ---------
 
-* Open the src/CppUnitLibraries.dsw workspace in VC++.
+* Open the src/CppUnitLibrariesXXXX.sln workspace in VC++.
 * In the 'Build' menu, select 'Batch Build...'
 * In the batch build dialog, select all projects and press the build button.
 * The resulting libraries can be found in the lib/ directory.
@@ -95,7 +85,7 @@ Building:
 Testing:
 --------
 
-* Open the workspace examples/Examples.dsw.
+* Open the workspace examples/examplesXXXX.sln.
 * Make CppUnitTestApp the active project.
 * Select the configuration you build the library for.
 * Compile and run the project. The TestRunner GUI should appear.
@@ -105,7 +95,7 @@ Libraries:
 ----------
 
 All the compiled libraries and DLL can be found in the 'lib' directory.
-Most libraries can be build from src/CppUnitLibraries.dsw workspace.
+Most libraries can be build from src/CppUnitLibrariesXXXX.sln workspace.
 
 lib\:
 cppunit.lib				: CppUnit static library "Multithreaded DLL"
@@ -114,8 +104,6 @@ cppunit_dll.dll			: CppUnit dynamic library (DLL) "Multithreaded DLL"
 cppunit_dll.lib			: CppUnit dynamic import library "Multithreaded DLL"
 cppunitd_dll.dll		: CppUnit dynamic library (DLL) "Debug Multithreaded DLL"
 cppunitd_dll.lib		: CppUnit dynamic import library "Debug Multithreaded DLL"
-qttestrunner.dll		: QT TestRunner dynamic library (DLL) "Multithreaded DLL"
-qttestrunner.lib		: QT TestRunner import library "Multithreaded DLL"
 testrunner.dll			: MFC TestRunner dynamic library (DLL) "Multithreaded DLL"
 testrunner.lib			: MFC TestRunner import library "Multithreaded DLL"
 testrunnerd.dll			: MFC TestRunner dynamic library (DLL) "Debug Multithreaded DLL"
@@ -124,7 +112,6 @@ testrunneru.dll			: MFC Unicode TestRunner dynamic library (DLL) "Multithreaded 
 testrunneru.lib			: MFC Unicode TestRunner import library "Multithreaded DLL"
 testrunnerud.dll		: MFC Unicode TestRunner dynamic library (DLL) "Debug Multithreaded DLL"
 testrunnerud.lib		: MFC Unicode TestRunner import library "Debug Multithreaded DLL"
-TestRunnerDSPlugIn.dll	: The add-in you register in VC++.
 
 Notes that when you are using CppUnit DLL (cppunit*_dll.dll), you must link 
 against the associated import library and define the pre-processor symbol 
@@ -183,23 +170,3 @@ Using CppUnit:
   - link lib/cppunitXX.lib and lib/testrunnerXX.lib
   - include/ must be in the include search path
   - lib/testrunnerXX.dll must be available to run your project
-
-* Using the DSPlugIn:
-  You must register the plug-in with VC++. This is done in 
-  Tools/Customize/Add-ins and Macro files, selecting browse and
-  selecting lib/TestRunnerDSPlugIn.dll (you can register the release
-  or the debug version, both work).
-
-  If an instance of VC++ is running and you double-click on a failure,
-  VC++ will open the file and select the failure line.
-
-* Using the Test Plug In Runner:
-  Your DLL must export a function that implement the interface
-defined in include/msvc6/testrunner/TestPlugInInterface.h.
-See examples/msvc6/TestPlugIn/TestPlugInInterfaceImpl.* for an example.
-Be warned, that runner is still experimental and have not been tested
-much.
-  
-  If you did a batch build, run TestPlugInRunnerd.exe and choose dll
-  examples/cppunittest/DebugPlugIn/CppUnitTestPlugInd.dll, or
-  examples/simple/DebugPlugIn/simple_plugind.dll to test it out.

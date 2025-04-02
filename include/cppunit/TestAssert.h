@@ -5,18 +5,19 @@
 #include <cppunit/Exception.h>
 #include <cppunit/Asserter.h>
 #include <cppunit/portability/Stream.h>
+#include <cppunit/tools/StringHelper.h>
 #include <stdio.h>
 #include <float.h> // For struct assertion_traits<double>
 
 // Work around "passing 'T' chooses 'int' over 'unsigned int'" warnings when T
 // is an enum type:
-#if defined __GNUC__ && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 6))
+#if defined __GNUC__ && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 6)) \
+    && !defined __clang__
 #pragma GCC system_header
 #endif
 
 
 CPPUNIT_NS_BEGIN
-
 
 /*! \brief Traits used by CPPUNIT_ASSERT* macros.
  *
@@ -71,21 +72,9 @@ struct assertion_traits
 
     static std::string toString( const T& x )
     {
-        OStringStream ost;
-// Work around "passing 'T' chooses 'int' over 'unsigned int'" warnings when T
-// is an enum type:
-#if defined __GNUC__ && ((__GNUC__ == 4 && __GNUC_MINOR__ >= 6) || __GNUC__ > 4)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsign-promo"
-#endif
-        ost << x;
-#if defined __GNUC__ && ((__GNUC__ == 4 && __GNUC_MINOR__ >= 6) || __GNUC__ > 4)
-#pragma GCC diagnostic pop
-#endif
-        return ost.str();
+        return CPPUNIT_NS::StringHelper::toString(x);
     }
 };
-
 
 /*! \brief Traits used by CPPUNIT_ASSERT_DOUBLES_EQUAL(). 
  * 
@@ -124,12 +113,46 @@ struct assertion_traits<double>
 #ifdef __STDC_SECURE_LIB__ // Use secure version with visual studio 2005 to avoid warning.
        sprintf_s(buffer, sizeof(buffer), "%.*g", precision, x); 
 #else	
-       sprintf(buffer, "%.*g", precision, x); 
+       snprintf(buffer, sizeof(buffer), "%.*g", precision, x); 
 #endif
        return buffer;
     }
 };
 
+
+/*! \brief Message traits used by CPPUNIT_ASSERT* macros.
+ *
+ * Here is an example of specialising these traits:
+ *
+ * \code
+ * CPPUNIT_NS_BEGIN
+ * static std::string message_to_string(const MyType& m)
+ * {
+ *     return m.getStr();
+ * };
+ * CPPUNIT_NS_END
+ * \endcode
+ */
+inline std::string message_to_string( const std::string& s )
+{
+    return s;
+}
+inline std::string message_to_string( const OStream& out )
+{
+    OStringStream ost;
+    ost << out.rdbuf();
+    return ost.str();
+}
+/// for calls to addDetail
+inline AdditionalMessage message_to_string( const AdditionalMessage& msg )
+{
+    return msg;
+}
+/// otherwise calls with string literals are ambiguous
+inline std::string message_to_string( const char * s )
+{
+    return s;
+}
 
 /*! \brief (Implementation) Asserts that two objects of the same type are equals.
  * Use CPPUNIT_ASSERT_EQUAL instead of this function.
@@ -272,7 +295,7 @@ void assertGreaterEqual( const T& expected,
                                   CPPUNIT_NS::Message( "assertion failed", \
                                                        "Expression: "      \
                                                        #condition,         \
-                                                       message ),          \
+                                                       CPPUNIT_NS::message_to_string(message) ),          \
                                   CPPUNIT_SOURCELINE() ) )
 
 /** Fails with the specified message.
@@ -281,7 +304,7 @@ void assertGreaterEqual( const T& expected,
  */
 #define CPPUNIT_FAIL( message )                                         \
   ( CPPUNIT_NS::Asserter::fail( CPPUNIT_NS::Message( "forced failure",  \
-                                                     message ),         \
+                                                     CPPUNIT_NS::message_to_string(message) ),         \
                                 CPPUNIT_SOURCELINE() ) )
 
 #ifdef CPPUNIT_ENABLE_SOURCELINE_DEPRECATED
@@ -335,7 +358,7 @@ void assertGreaterEqual( const T& expected,
   ( CPPUNIT_NS::assertEquals( (expected),              \
                               (actual),                \
                               CPPUNIT_SOURCELINE(),    \
-                              (message) ) )
+                              CPPUNIT_NS::message_to_string(message) ) )
 #endif
 
 /** Asserts that actual is less than expected, provides additional message on failure.
@@ -469,7 +492,7 @@ void assertGreaterEqual( const T& expected,
                                     (actual),              \
                                     (delta),               \
                                     CPPUNIT_SOURCELINE(),  \
-                                    (message) ) )
+                                    CPPUNIT_NS::message_to_string(message) ) )
 
 
 /** Asserts that the given expression throws an exception of the specified type. 
@@ -487,7 +510,7 @@ void assertGreaterEqual( const T& expected,
 
 
 // implementation detail
-#if CPPUNIT_USE_TYPEINFO_NAME
+#if defined(CPPUNIT_USE_TYPEINFO_NAME)
 #define CPPUNIT_EXTRACT_EXCEPTION_TYPE_( exception, no_rtti_message ) \
    CPPUNIT_NS::TypeInfoHelper::getClassName( typeid(exception) )
 #else
@@ -511,7 +534,7 @@ void assertGreaterEqual( const T& expected,
    do {                                                                       \
       bool cpputCorrectExceptionThrown_ = false;                              \
       CPPUNIT_NS::Message cpputMsg_( "expected exception not thrown" );       \
-      cpputMsg_.addDetail( message );                                         \
+      cpputMsg_.addDetail( CPPUNIT_NS::message_to_string(message) );                                         \
       cpputMsg_.addDetail( "Expected: "                                       \
                            CPPUNIT_GET_PARAMETER_STRING( ExceptionType ) );   \
                                                                               \
@@ -529,7 +552,7 @@ void assertGreaterEqual( const T& expected,
       }                                                                       \
                                                                               \
       if ( cpputCorrectExceptionThrown_ )                                     \
-         break;                                                               \
+	    { break; }                                                        \
                                                                               \
       CPPUNIT_NS::Asserter::fail( cpputMsg_,                                  \
                                   CPPUNIT_SOURCELINE() );                     \
@@ -563,7 +586,7 @@ void assertGreaterEqual( const T& expected,
 # define CPPUNIT_ASSERT_NO_THROW_MESSAGE( message, expression )               \
    do {                                                                       \
       CPPUNIT_NS::Message cpputMsg_( "unexpected exception caught" );         \
-      cpputMsg_.addDetail( message );                                         \
+      cpputMsg_.addDetail( CPPUNIT_NS::message_to_string(message) );                                         \
                                                                               \
       try {                                                                   \
          expression;                                                          \

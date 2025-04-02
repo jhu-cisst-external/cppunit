@@ -20,7 +20,7 @@ MockTestCase::MockTestCase( std::string name )
     , m_setUpThrow( false )
     , m_tearDownThrow( false )
     , m_runTestThrow( false )
-    , m_passingTest( NULL )
+    , m_passingTest( nullptr )
 {
 }
 
@@ -33,7 +33,7 @@ MockTestCase::~MockTestCase()
 int 
 MockTestCase::countTestCases() const
 {
-  MockTestCase *mutableThis = CPPUNIT_CONST_CAST(MockTestCase *, this );
+  MockTestCase *mutableThis = const_cast<MockTestCase*>( this );
   ++mutableThis->m_actualCountTestCasesCallCount;
   if ( m_expectCountTestCasesCall )
   {

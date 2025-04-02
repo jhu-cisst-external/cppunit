@@ -1,6 +1,6 @@
 #include <cppunit/config/SourcePrefix.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/portability/CppUnitMap.h>
+#include <map>
 #include <cppunit/TestSuite.h>
 #include <assert.h>
 
@@ -12,7 +12,7 @@ CPPUNIT_NS_BEGIN
 class TestFactoryRegistryList
 {
 private:
-  typedef CppUnitMap<std::string, TestFactoryRegistry *, std::less<std::string> > Registries;
+  typedef std::map<std::string, TestFactoryRegistry *, std::less<std::string> > Registries;
   Registries m_registries;
 
   enum State {
@@ -70,7 +70,7 @@ public:
     // validity beforehand using TestFactoryRegistry::isValid() beforehand.
     assert( isValid() );
     if ( !isValid() )         // release mode
-      return NULL;            // => force CRASH
+      return nullptr;            // => force CRASH
 
     return getInstance()->getInternalRegistry( name );
   }
@@ -85,7 +85,7 @@ public:
 
 TestFactoryRegistry::TestFactoryRegistry( std::string name ) :
     m_factories(),
-    m_name( name )
+    m_name(std::move(name))
 {
 }
 
@@ -143,12 +143,20 @@ TestFactoryRegistry::makeTest()
 void 
 TestFactoryRegistry::addTestToSuite( TestSuite *suite )
 {
+  std::multimap<std::string, Test *> sorted;
   for ( Factories::iterator it = m_factories.begin(); 
         it != m_factories.end(); 
         ++it )
   {
     TestFactory *factory = *it;
-    suite->addTest( factory->makeTest() );
+    Test *test = factory->makeTest();
+    sorted.insert({test->getName(), test});
+  }
+  // In the unlikely case of multiple Tests with identical names, those will
+  // still be added in random order:
+  for (auto const &i: sorted)
+  {
+    suite->addTest( i.second );
   }
 }
 

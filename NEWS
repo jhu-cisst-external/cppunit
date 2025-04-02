@@ -1,12 +1,73 @@
+  New in CppUnit 1.15.2:
+  ---------------------
+
+* Portability:
+
+  - Use more C++11 features and remove old and deprecated
+    C++ language features
+
+  - Fix a few compiler warnings
+
+  New in CppUnit 1.15.1:
+  ---------------------
+
+* Portability:
+
+  - Fix Wdefaulted-function-deleted warning with clang
+
+  - Remove old Visual Studio project files
+
+  New in CppUnit 1.15.0:
+  ---------------------
+
+  - Report (un)signed character as intergers
+
+  - add CPPUNIT_TEST_FIXTURE()
+
+  - add message_to_string trait to allow custom string formatters
+
+* Portability:
+  - Fix build with gcc 9
+
+  - Fix various compiler warnings
+
   New in CppUnit 1.14.0:
   ---------------------
 
-* Test Plug-in Runner: 
-  - Fixed crash on Win64 in test runner (fdo#81433)
+  - TestCaller supports any callable that can be put into
+    std::function<void()>.
+
+  - CPPUNIT_TEST_PARAMETERIZED executes a test for any value in
+    an iteratable.
 
   - Added new Assertion macros: ASSERT_LESS, ASSERT_GREATER,
                     ASSERT_LESSEQUAL, ASSERT_GREATEREQUAL
 
+* Portability:
+  - Always build with C++11.
+
+  - Always require RTTI support.
+
+  - Removed support for compilers that don't support
+    default template arguments with standard containers.
+
+  - Removed portability headers for wrapper around
+    standard containers.
+
+  - Support C++11 enum class in asserter.
+
+* Test Plug-in Runner: 
+  - Fixed crash on Win64 in test runner (fdo#81433)
+
+* Removed features
+
+  - QT test runner
+
+  - msvc6 test runners
+
+  - msvc6 plugin
+
+  - BeOS support
 
   New in CppUnit 1.13.2:
   ---------------------

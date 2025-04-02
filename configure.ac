@@ -6,8 +6,8 @@ AC_PREREQ([2.65])
 # Version informations
 # ====================
 m4_define([cppunit_version_major],[1])
-m4_define([cppunit_version_minor],[14])
-m4_define([cppunit_version_micro],[0])
+m4_define([cppunit_version_minor],[15])
+m4_define([cppunit_version_micro],[2])
 m4_define([cppunit_version],[cppunit_version_major.cppunit_version_minor.cppunit_version_micro])
 m4_define([cppunit_interface_age], [0])
 m4_define([cppunit_binary_age], [0])
@@ -38,8 +38,6 @@ AC_LIBTOOL_WIN32_DLL
 AC_HEADER_STDC
 AC_LTDL_DLLIB
 AC_CHECK_HEADERS(cmath,[],[],[/**/])
-AX_CXX_HAVE_ISFINITE
-AC_CHECK_FUNCS(finite)
 AX_CXX_HAVE_SSTREAM
 AC_CXX_HAVE_STRSTREAM
 
@@ -47,24 +45,9 @@ AC_CXX_HAVE_STRSTREAM
 BB_ENABLE_DOXYGEN
 
 # Compiler characteristics
-AC_CXX_RTTI
 AX_CXX_GCC_ABI_DEMANGLE
 AC_CXX_STRING_COMPARE_STRING_FIRST
-
-AC_ARG_ENABLE([typeinfo-name],
-	[AS_HELP_STRING([--disable-typeinfo-name], [Disable use of RTTI for class names])],
-	[enable_typeinfo_name="$enableval"],
-	[enable_typeinfo_name=yes]
-)
-AS_IF([test x"$enable_typeinfo_name" = "xno" -o x"$HAVE_RTTI" != "x1"], [
-	use_typeinfo="yes"
-	typeinfoval="CPPUNIT_HAVE_RTTI"
-], [
-	use_typeinfo="no"
-	typeinfoval="0"
-])
-AC_DEFINE_UNQUOTED(USE_TYPEINFO_NAME, [$typeinfoval],
-	[Define to 1 to use type_info::name() for class names])
+AX_CXX_COMPILE_STDCXX_11(noext, mandatory)
 
 # =================================
 # Libtool/Version Makefile settings
@@ -83,25 +66,10 @@ AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION, [cppunit_interface_age])
 AC_SUBST(LT_AGE)
 
+
 # ================
 # Check for cflags
 # ================
-
-# ================================================================
-# Check if optional features should be enabled (requires c++11)
-# ================================================================
-
-AC_ARG_ENABLE(optional_features,
-              [AS_HELP_STRING([--enable-optional-features], [Build with some optional features requiring C++11 support.])],
-              [enable_optional="$enableval"],
-              [enable_optional=yes]
-)
-
-AS_IF([test "x$enable_optional" != "xno"], [
-       AX_CXX_COMPILE_STDCXX_11(noext, mandatory)
-])
-
-AM_CONDITIONAL([WITH_OPTIONAL_FEATURES], [test "x$enable_optional" != "xno"])
 
 # =====
 # Debug
@@ -119,9 +87,9 @@ AS_IF([test "x$enable_debug" != "xno"], [
 ])
 
 AC_ARG_ENABLE([werror],
-	[AS_HELP_STRING([--disable-werror], [Treat all warnings as errors, useful for development])],
+	[AS_HELP_STRING([--enable-werror], [Treat all warnings as errors, useful for development])],
 	[enable_werror="$enableval"],
-	[enable_werror=yes]
+	[enable_werror=no]
 )
 AS_IF([test x"$enable_werror" != "xno"], [
 	CFLAGS="$CFLAGS -Werror"
@@ -160,8 +128,6 @@ AC_CONFIG_FILES([
 	include/cppunit/portability/Makefile
 	include/cppunit/tools/Makefile
 	include/cppunit/ui/Makefile
-	include/cppunit/ui/mfc/Makefile
-	include/cppunit/ui/qt/Makefile
 	include/cppunit/ui/text/Makefile
 	doc/Makefile
 	doc/Doxyfile
@@ -184,7 +150,5 @@ Build configuration:
 	debug:              ${enable_debug}
 	docs:               ${enable_doc}
 	werror:             ${enable_werror}
-	typeinfo-name:      ${use_typeinfo}
-        optional-features:  ${enable_optional}
 ==============================================================================
 ])

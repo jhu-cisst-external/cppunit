@@ -25,31 +25,27 @@ docinternal = \
 	doc/makedox.bat
 
 m4dir = $(datadir)/aclocal
-m4_DATA = cppunit.m4
+m4_DATA =
 
 m4internal = \
 	m4/ac_cxx_have_strstream.m4 \
 	m4/ac_cxx_string_compare_string_first.m4 \
 	m4/ac_dll.m4 \
 	m4/ax_cxx_gcc_abi_demangle.m4 \
-	m4/ax_cxx_have_isfinite.m4 \
 	m4/ax_cxx_have_sstream.m4 \
 	m4/ax_cxx_namespaces.m4 \
-	m4/ax_cxx_rtti.m4 \
 	m4/ax_cxx_compile_stdcxx_11.m4 \
 	m4/ax_prefix_config_h.m4 \
 	m4/bb_enable_doxygen.m4 \
 	m4/README
 
-unusedfolders = \
-	src/msvc6 \
-	src/qttestrunner \
-	include/msvc6
+unusedfolders =
 
 EXTRA_DIST = \
 	autogen.sh \
 	contrib \
 	examples \
+	lib/.keepme \
 	$(pkgconfig_DATA) \
 	$(man_MANS) \
 	$(doc_DATA) \

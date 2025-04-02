@@ -1,11 +1,11 @@
-EXTRA_DIST = hierarchy.dsw hierarchy.dsp
+EXTRA_DIST = hierarchy.vcproj
 
 TESTS = hierarchy
 XFAIL_TESTS = hierarchy
 
 check_PROGRAMS = $(TESTS)
 
-INCLUDES = -I$(top_builddir)/include -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include
 
 hierarchy_SOURCES = BoardGame.cpp \
                    Chess.cpp \

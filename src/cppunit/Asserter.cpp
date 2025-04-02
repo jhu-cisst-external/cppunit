@@ -7,15 +7,15 @@ CPPUNIT_NS_BEGIN
 
 
 // coverity[+kill]
-void 
-Asserter::fail( std::string message, 
+[[noreturn]] void
+Asserter::fail( const std::string& message,
                 const SourceLine &sourceLine )
 {
   fail( Message( "assertion failed", message ), sourceLine );
 }
 
 // coverity[+kill]
-void 
+[[noreturn]] void
 Asserter::fail( const Message &message, 
                 const SourceLine &sourceLine )
 {
@@ -23,9 +23,9 @@ Asserter::fail( const Message &message,
 }
 
 
-void 
-Asserter::failIf( bool shouldFail, 
-                  const Message &message, 
+void
+Asserter::failIf( bool shouldFail,
+                  const Message &message,
                   const SourceLine &sourceLine )
 {
   if ( shouldFail )
@@ -33,9 +33,9 @@ Asserter::failIf( bool shouldFail,
 }
 
 
-void 
-Asserter::failIf( bool shouldFail, 
-                  std::string message, 
+void
+Asserter::failIf( bool shouldFail,
+                  const std::string& message,
                   const SourceLine &sourceLine )
 {
   failIf( shouldFail, Message( "assertion failed", message ), sourceLine );
@@ -77,7 +77,7 @@ Asserter::makeExpectedGreaterEqual( const std::string& expectedValue )
     return "Expected greater or equal than: " + expectedValue;
 }
 
-std::string 
+std::string
 Asserter::makeActual( const std::string &actualValue )
 {
   return "Actual  : " + actualValue;
@@ -99,7 +99,7 @@ Asserter::makeMessage( const std::string& expectedMessage,
 }
 
 
-Message 
+Message
 Asserter::makeNotEqualMessage( const std::string &expectedValue,
                                const std::string &actualValue,
                                const AdditionalMessage &additionalMessage,
@@ -109,12 +109,12 @@ Asserter::makeNotEqualMessage( const std::string &expectedValue,
 }
 
 
-void 
-Asserter::failNotEqual( std::string expected, 
-                        std::string actual, 
+void
+Asserter::failNotEqual( const std::string& expected,
+                        const std::string& actual,
                         const SourceLine &sourceLine,
                         const AdditionalMessage &additionalMessage,
-                        std::string shortDescription )
+                        const std::string& shortDescription )
 {
   fail( makeMessage( makeExpectedEqual(expected),
                      makeActual(actual),
@@ -124,12 +124,12 @@ Asserter::failNotEqual( std::string expected,
 }
 
 
-void 
-Asserter::failNotLess( std::string expected, 
-                        std::string actual, 
-                        const SourceLine &sourceLine,
-                        const AdditionalMessage &additionalMessage,
-                        std::string shortDescription )
+[[noreturn]] void
+Asserter::failNotLess( const std::string& expected,
+                       const std::string& actual,
+                       const SourceLine &sourceLine,
+                       const AdditionalMessage &additionalMessage,
+                       const std::string& shortDescription )
 {
   fail( makeMessage( makeExpectedLess(expected),
                      makeActual(actual),
@@ -139,12 +139,12 @@ Asserter::failNotLess( std::string expected,
 }
 
 
-void 
-Asserter::failNotGreater( std::string expected, 
-                        std::string actual, 
-                        const SourceLine &sourceLine,
-                        const AdditionalMessage &additionalMessage,
-                        std::string shortDescription )
+[[noreturn]] void
+Asserter::failNotGreater( const std::string& expected,
+                          const std::string& actual,
+                          const SourceLine &sourceLine,
+                          const AdditionalMessage &additionalMessage,
+                          const std::string& shortDescription )
 {
   fail( makeMessage( makeExpectedGreater(expected),
                      makeActual(actual),
@@ -153,40 +153,40 @@ Asserter::failNotGreater( std::string expected,
         sourceLine );
 }
 
-void 
-Asserter::failNotLessEqual( std::string expected, 
-                            std::string actual, 
+[[noreturn]] void
+Asserter::failNotLessEqual( const std::string& expected,
+                            const std::string& actual,
                             const SourceLine &sourceLine,
                             const AdditionalMessage &additionalMessage,
-                            std::string shortDescription )
+                            const std::string& shortDescription )
 {
   fail( makeMessage( makeExpectedLessEqual(expected),
                      makeActual(actual),
                      shortDescription,
-                     additionalMessage ), 
+                     additionalMessage ),
         sourceLine );
 }
 
-void 
-Asserter::failNotGreaterEqual( std::string expected, 
-                            std::string actual, 
-                            const SourceLine &sourceLine,
-                            const AdditionalMessage &additionalMessage,
-                            std::string shortDescription )
+[[noreturn]] void
+Asserter::failNotGreaterEqual( const std::string& expected,
+                               const std::string& actual,
+                               const SourceLine &sourceLine,
+                               const AdditionalMessage &additionalMessage,
+                               const std::string& shortDescription )
 {
   fail( makeMessage( makeExpectedGreaterEqual(expected),
                      makeActual(actual),
                      shortDescription,
-                     additionalMessage ), 
+                     additionalMessage ),
         sourceLine );
 }
-void 
+void
 Asserter::failNotEqualIf( bool shouldFail,
-                          std::string expected, 
-                          std::string actual, 
+                          const std::string& expected,
+                          const std::string& actual,
                           const SourceLine &sourceLine,
                           const AdditionalMessage &additionalMessage,
-                          std::string shortDescription )
+                          const std::string& shortDescription )
 {
   if ( shouldFail )
     failNotEqual( expected, actual, sourceLine, additionalMessage, shortDescription );
